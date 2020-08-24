@@ -1,6 +1,7 @@
 package english_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/nickwells/english.mod/english"
@@ -156,13 +157,8 @@ func TestPlurals(t *testing.T) {
 
 	for _, tc := range testCases {
 		rslt := english.Plural(tc.word, tc.n)
-		if rslt != tc.expRslt {
-			t.Log(tc.IDStr())
-			t.Logf("\t: english.Plural(word = %q, n = %d)\n",
-				tc.word, tc.n)
-			t.Logf("\t: expected: %q\n", tc.expRslt)
-			t.Logf("\t:      got: %q\n", rslt)
-			t.Errorf("\t: Unexpected result\n")
-		}
+		testhelper.CmpValString(t,
+			tc.IDStr()+fmt.Sprintf(": %d of: %q", tc.n, tc.word), "plural",
+			rslt, tc.expRslt)
 	}
 }

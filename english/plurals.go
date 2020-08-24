@@ -32,6 +32,8 @@ var specialCasePlurals = map[string]string{
 	"series":  "series",
 	"species": "species",
 
+	"die": "dice",
+
 	"photo": "photos",
 	"piano": "pianos",
 	"halo":  "halos",
