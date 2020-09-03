@@ -157,7 +157,7 @@ func TestPlurals(t *testing.T) {
 
 	for _, tc := range testCases {
 		rslt := english.Plural(tc.word, tc.n)
-		testhelper.CmpValString(t,
+		testhelper.DiffString(t,
 			tc.IDStr()+fmt.Sprintf(": %d of: %q", tc.n, tc.word), "plural",
 			rslt, tc.expRslt)
 	}
