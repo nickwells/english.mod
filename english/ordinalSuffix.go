@@ -7,7 +7,7 @@ var ordSfx = [10]string{
 // value of n. 1 will give "st", 2 will give "nd" and so on
 func OrdinalSuffix(n int) string {
 	if n < 0 {
-		n = n * -1
+		n *= -1
 	}
 
 	nMod100 := n % 100
