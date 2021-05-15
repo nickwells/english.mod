@@ -1,7 +1,8 @@
 package english
 
 var ordSfx = [10]string{
-	"th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th"}
+	"th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th",
+}
 
 // OrdinalSuffix returns the two letter suffix appropriate to the ordinal
 // value of n. 1 will give "st", 2 will give "nd" and so on
