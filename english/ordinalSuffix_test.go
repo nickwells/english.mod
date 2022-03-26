@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/nickwells/english.mod/english"
-	"github.com/nickwells/testhelper.mod/testhelper"
+	"github.com/nickwells/testhelper.mod/v2/testhelper"
 )
 
 func TestOrdinalSuffix(t *testing.T) {
