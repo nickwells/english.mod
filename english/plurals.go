@@ -46,11 +46,11 @@ var specialCasePlurals = map[string]string{
 // value of n. If n is 1 then the word is returned unchanged, otherwise the
 // plural form is returned. For instance:
 //
-//    Plural("error", 1)
+//	Plural("error", 1)
 //
 // would return "error", but
 //
-//    Plural("error", 2)
+//	Plural("error", 2)
 //
 // would return "errors"
 func Plural(word string, n int) string {
