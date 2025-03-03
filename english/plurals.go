@@ -58,8 +58,11 @@ func Plural(word string, n int) string {
 		return word
 	}
 
-	var initialCapital bool
-	var allCapitals bool
+	var (
+		initialCapital,
+		allCapitals bool
+	)
+
 	initialCapital = unicode.IsUpper([]rune(word)[0])
 	if initialCapital {
 		if word == strings.ToUpper(word) {
@@ -68,14 +71,18 @@ func Plural(word string, n int) string {
 	}
 
 	word = plural(strings.ToLower(word), n)
+
 	if initialCapital {
 		if allCapitals {
 			return strings.ToUpper(word)
 		}
+
 		wordRunes := []rune(word)
 		wordRunes[0] = unicode.ToUpper(wordRunes[0])
+
 		return string(wordRunes)
 	}
+
 	return word
 }
 

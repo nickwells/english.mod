@@ -8,6 +8,7 @@ import "strings"
 // produce joined strings like: "a, b, c or d".
 func Join(s []string, sep, finalSep string) string {
 	joined := ""
+
 	switch len(s) {
 	case 0:
 	case 1:
@@ -16,5 +17,6 @@ func Join(s []string, sep, finalSep string) string {
 		joined = strings.Join(s[:len(s)-1], sep)
 		joined += finalSep + s[len(s)-1]
 	}
+
 	return joined
 }

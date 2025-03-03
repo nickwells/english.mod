@@ -11,12 +11,13 @@ func OrdinalSuffix(n int) string {
 		n *= -1
 	}
 
-	nMod100 := n % 100
+	nMod100 := n % 100 //nolint:mnd
 	switch nMod100 {
-	case 11, 12, 13:
+	case 11, 12, 13: //nolint:mnd
 		return "th"
 	}
 
-	nMod10 := n % 10
+	nMod10 := n % 10 //nolint:mnd
+
 	return ordSfx[nMod10]
 }
