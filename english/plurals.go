@@ -5,15 +5,24 @@ import (
 	"unicode"
 )
 
-var specialCasePlurals = map[string]string{
-	"deer":   "deer",
-	"sheep":  "sheep",
-	"mouse":  "mice",
-	"louse":  "lice",
-	"moose":  "moose",
+var pluralExceptions = map[string]string{
+	"deer":  "deer",
+	"moose": "moose",
+	"elk":   "elk",
+
+	"sheep":    "sheep",
+	"mouse":    "mice",
+	"dormouse": "dormice",
+	"louse":    "lice",
+
 	"shrimp": "shrimp",
-	"ox":     "oxen",
-	"goose":  "geese",
+	"squid":  "squid",
+	"salmon": "salmon",
+	"carp":   "carp",
+	"trout":  "trout",
+
+	"ox":    "oxen",
+	"goose": "geese",
 
 	"man":    "men",
 	"woman":  "women",
@@ -40,11 +49,81 @@ var specialCasePlurals = map[string]string{
 
 	"gas": "gasses",
 	"fez": "fezzes",
+
+	"criterion":  "criteria",
+	"automaton":  "automata",
+	"phenomenon": "phenomena",
+
+	"radius":  "radii",
+	"fungus":  "fungi",
+	"alumnus": "alumni",
+
+	"chassis": "chassis",
+	"canto":   "cantos",
+	"portico": "porticos",
+	"quarto":  "quartos",
+	"kimono":  "kimonos",
+
+	"stadium": "stadiums",
+}
+
+// pluralRule records the information needed to generate a plural
+type pluralRule struct {
+	suffix  string // the identifying suffix
+	trimLen int    // how many letters to trim before adding the plural
+	plural  string // the letters to add to form the plural
+}
+
+var pluralRules = []pluralRule{
+	{"ff", 0, "s"},
+	{"f", 1, "ves"},
+	{"fe", 2, "ves"},
+
+	{"ay", 0, "s"},
+	{"ey", 0, "s"},
+	{"iy", 0, "s"},
+	{"oy", 0, "s"},
+	{"quy", 1, "ies"},
+	{"uy", 0, "s"},
+	{"y", 1, "ies"},
+
+	{"is", 2, "es"},
+	{"s", 0, "es"},
+
+	{"ix", 1, "ces"},
+	{"ex", 2, "ices"},
+	{"x", 0, "es"},
+
+	{"z", 0, "es"},
+
+	{"o", 0, "es"},
+
+	{"sh", 0, "es"},
+	{"ch", 0, "es"},
+}
+
+// plural transforms a word into its plural form
+func plural(word string) string {
+	// handle exceptions first ...
+	plural, ok := pluralExceptions[word]
+	if ok {
+		return plural
+	}
+
+	// ... then the non-standard rules ...
+	for _, rule := range pluralRules {
+		if strings.HasSuffix(word, rule.suffix) {
+			return word[:len(word)-rule.trimLen] + rule.plural
+		}
+	}
+
+	// ... then the catch-all rule
+	return word + "s"
 }
 
 // Plural returns the appropriate plural form of the word, depending on the
-// value of n. If n is 1 then the word is returned unchanged, otherwise the
-// plural form is returned. For instance:
+// value of count. If count is 1 then the word is returned unchanged,
+// otherwise the plural form is returned. For instance:
 //
 //	Plural("error", 1)
 //
@@ -52,9 +131,24 @@ var specialCasePlurals = map[string]string{
 //
 //	Plural("error", 2)
 //
-// would return "errors"
-func Plural(word string, n int) string {
+// would return "errors".
+//
+// Note that English has lots of rules and edge cases for generating plurals;
+// it's not just case of adding an 's' at the end. Additionally there are
+// several exceptional words which have their own idiosyncratic plurals. A
+// final complication lies with those words whose plural depends on the
+// meaning of the word; for instance "medium" meaning a substance through
+// which impressions or forces are conveyed has a plural of "media" whereas
+// with a meaning of a person who claims to communicate with the dead, the
+// plural is "mediums". If you come across a word where you think I have
+// missed an exception or there is some general rule which is not followed
+// please submit a bug report.
+func Plural(word string, count int) string {
 	if len(word) == 0 {
+		return word
+	}
+
+	if count == 1 { // gramatically, any count other than one is plural
 		return word
 	}
 
@@ -67,7 +161,7 @@ func Plural(word string, n int) string {
 		}
 	}
 
-	word = plural(strings.ToLower(word), n)
+	word = plural(strings.ToLower(word))
 
 	if initialCapital {
 		if allCapitals {
@@ -81,50 +175,4 @@ func Plural(word string, n int) string {
 	}
 
 	return word
-}
-
-type pluralRule struct {
-	suffix  string
-	trimLen int
-	plural  string
-}
-
-var pluralRules = []pluralRule{
-	{"ff", 0, "s"},
-	{"f", 1, "ves"},
-	{"fe", 2, "ves"},
-	{"is", 2, "es"},
-	{"on", 2, "a"},
-	{"ay", 0, "s"},
-	{"ey", 0, "s"},
-	{"iy", 0, "s"},
-	{"oy", 0, "s"},
-	{"uy", 0, "s"},
-	{"y", 1, "ies"},
-	{"s", 0, "es"},
-	{"x", 0, "es"},
-	{"z", 0, "es"},
-	{"o", 0, "es"},
-	{"sh", 0, "es"},
-	{"ch", 0, "es"},
-}
-
-func plural(word string, n int) string {
-	if n == 1 {
-		return word
-	} // note for constructing plurals 0 is plural (!)
-
-	// Special cases
-	plural, ok := specialCasePlurals[word]
-	if ok {
-		return plural
-	}
-
-	for _, rule := range pluralRules {
-		if strings.HasSuffix(word, rule.suffix) {
-			return word[:len(word)-rule.trimLen] + rule.plural
-		}
-	}
-
-	return word + "s"
 }
